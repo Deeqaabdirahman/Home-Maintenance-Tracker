@@ -1,0 +1,247 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Home Maintenance Tracker</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <div class="logo" aria-hidden="true">H</div>
+      <div>
+        <div class="title">Home Maintenance Tracker</div>
+        <div class="subtitle">Simple maintenance reminders for any home or apartment</div>
+      </div>
+    </div>
+
+    <nav class="nav">
+      <a href="#/dashboard" data-route="dashboard">Dashboard</a>
+      <a href="#/tasks" data-route="tasks">Task List</a>
+      <a href="#/calendar" data-route="calendar">Calendar</a>
+      <a class="btn" href="#/add" data-route="add">+ Add Task</a>
+    </nav>
+  </header>
+
+  <main class="container">
+    <!-- Pages -->
+    <section id="page-dashboard" class="page">
+      <div class="hero">
+        <h1>Keep up with household maintenance.</h1>
+        <p>
+          This prototype focuses on maintenance (filters, inspections, seasonal tasks) — not generic to‑dos.
+          Add tasks with smart recurrence and view them in a task list or calendar.
+        </p>
+        <div class="hero-actions">
+          <a class="btn primary" href="#/add">Create a maintenance task</a>
+          <a class="btn ghost" href="#/calendar">See the calendar</a>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-head">
+            <h2>Upcoming (next 14 days)</h2>
+            <span class="pill" id="upcoming-count">0</span>
+          </div>
+          <div id="upcoming-list" class="list"></div>
+          <div class="muted small">Tip: mark tasks complete to auto-schedule the next due date if recurring.</div>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <h2>Overdue</h2>
+            <span class="pill danger" id="overdue-count">0</span>
+          </div>
+          <div id="overdue-list" class="list"></div>
+          <div class="muted small">Overdue tasks are highlighted across the site.</div>
+        </div>
+      </div>
+
+      <div class="grid-3">
+        <div class="card">
+          <div class="card-head">
+            <h2>Quick Stats</h2>
+          </div>
+          <div class="kpi-row">
+            <div class="kpi">
+              <div class="kpi-num" id="kpi-total">0</div>
+              <div class="kpi-label">Total tasks</div>
+            </div>
+            <div class="kpi">
+              <div class="kpi-num" id="kpi-upcoming">0</div>
+              <div class="kpi-label">Upcoming</div>
+            </div>
+            <div class="kpi">
+              <div class="kpi-num" id="kpi-overdue">0</div>
+              <div class="kpi-label">Overdue</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <h2>Example Maintenance Ideas</h2>
+          </div>
+          <ul class="bullets">
+            <li>Replace HVAC filter (every 90 days)</li>
+            <li>Test smoke/CO detectors (monthly)</li>
+            <li>Clean dryer vent (every 6 months)</li>
+            <li>Check under sinks for leaks (monthly)</li>
+          </ul>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <h2>Who it’s for</h2>
+          </div>
+          <p class="muted">
+            Anyone living in a home or apartment — not just homeowners.
+            Track maintenance that keeps your space safe, clean, and functional.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section id="page-add" class="page">
+      <div class="page-title">
+        <h1>Add maintenance task</h1>
+        <p class="muted">Create a household maintenance task with a due date and optional recurrence.</p>
+      </div>
+
+      <form id="task-form" class="card form">
+        <div class="form-row">
+          <label>
+            Task name
+            <input required name="name" placeholder="e.g., Replace air filter" />
+          </label>
+          <label>
+            Category
+            <select name="category">
+              <option>HVAC</option>
+              <option>Safety</option>
+              <option>Appliances</option>
+              <option>Cleaning</option>
+              <option>Plumbing</option>
+              <option>Electrical</option>
+              <option>Trash</option>
+              <option>Other</option>
+            </select>
+          </label>
+        </div>
+
+        <div class="form-row">
+          <label>
+            Location (optional)
+            <input name="location" placeholder="e.g., Kitchen" />
+          </label>
+          <label>
+            Due date
+            <input required type="date" name="dueDate" />
+          </label>
+        </div>
+
+        <div class="form-row">
+          <label>
+            Recurrence
+            <select name="recurrence">
+              <option value="none">None (one-time)</option>
+              <option value="30">Every 30 days</option>
+              <option value="90">Every 90 days</option>
+              <option value="180">Every 6 months (180 days)</option>
+              <option value="365">Annually (365 days)</option>
+            </select>
+          </label>
+          <label>
+            Reminder notes (optional)
+            <input name="notes" placeholder="e.g., use 20x20x1 filter" />
+          </label>
+        </div>
+
+        <div class="form-actions">
+          <button class="btn primary" type="submit">Save task</button>
+          <a class="btn ghost" href="#/tasks">Cancel</a>
+          <button class="btn danger" type="button" id="seed-btn" title="Adds sample tasks for demo">Add sample tasks</button>
+        </div>
+
+        <div class="muted small">
+          This is a prototype. Tasks are saved in your browser (localStorage) so your demo stays consistent.
+        </div>
+      </form>
+    </section>
+
+    <section id="page-tasks" class="page">
+      <div class="page-title">
+        <h1>Task list</h1>
+        <p class="muted">View maintenance tasks as a checklist. Mark complete to auto-reschedule recurring tasks.</p>
+      </div>
+
+      <div class="toolbar">
+        <input id="search" class="search" placeholder="Search tasks…" />
+        <select id="filter">
+          <option value="all">All</option>
+          <option value="overdue">Overdue</option>
+          <option value="upcoming">Upcoming</option>
+          <option value="completed">Completed</option>
+        </select>
+        <select id="sort">
+          <option value="dueDate">Sort: Due date</option>
+          <option value="name">Sort: Name</option>
+          <option value="category">Sort: Category</option>
+        </select>
+      </div>
+
+      <div id="task-table" class="card table"></div>
+
+      <div class="row">
+        <button class="btn danger" id="clear-completed">Clear completed</button>
+        <button class="btn ghost" id="export-json">Export JSON</button>
+        <label class="btn ghost filebtn">
+          Import JSON
+          <input type="file" id="import-json" accept="application/json" />
+        </label>
+      </div>
+    </section>
+
+    <section id="page-calendar" class="page">
+      <div class="page-title">
+        <h1>Calendar</h1>
+        <p class="muted">Monthly view of maintenance tasks. Click a task to see details.</p>
+      </div>
+
+      <div class="calendar-head">
+        <button class="btn ghost" id="cal-prev">← Prev</button>
+        <div class="cal-month" id="cal-month">Month YYYY</div>
+        <button class="btn ghost" id="cal-next">Next →</button>
+      </div>
+
+      <div id="calendar" class="calendar card"></div>
+
+      <div id="overlay" class="overlay hidden" role="dialog" aria-modal="true">
+        <div class="overlay-card">
+          <div class="overlay-head">
+            <div>
+              <div class="overlay-title" id="ov-title">Task</div>
+              <div class="muted small" id="ov-sub">Details</div>
+            </div>
+            <button class="btn ghost" id="ov-close">✕</button>
+          </div>
+          <div class="overlay-body" id="ov-body"></div>
+          <div class="overlay-actions">
+            <button class="btn primary" id="ov-complete">Mark complete</button>
+            <button class="btn danger" id="ov-delete">Delete</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div>Prototype for class: Home Maintenance Tracker website</div>
+    <div class="muted">Calendar + Task List views • Smart recurrence reminders</div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
